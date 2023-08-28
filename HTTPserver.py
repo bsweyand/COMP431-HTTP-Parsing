@@ -1,12 +1,38 @@
 __author__ = "730318989"
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import re
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def command_is_valid(command):
+    arguments = re.split("[ \t]+", command)
+    if len(arguments) < 1 or arguments[0] != "GET":
+        print("ERROR -- Invalid Method token.")
+        return False
+    elif len(arguments) < 2 or re.match('^(/\w+)+$', arguments[1]) is None:
+        print("ERROR -- Invalid Absolute-Path token.")
+        return False
+    elif len(arguments) < 3 or re.match('^HTTP/\d.\d$', arguments[2]) is None:
+        print("ERROR -- Invalid HTTP-Version token.")
+        return False
+    elif len(arguments) > 3:
+        print("ERROR -- Spurious token before CRLF.")
+        return False
+    return True
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+# split input into separate commands
+command_list = []
+while True:
+    try:
+        line = input()
+    except EOFError:
+        break
+    command_list.append(line)
+
+for command in command_list:
+    print(command)
+    if not command_is_valid(command):
+        print()
+        continue
+
+
