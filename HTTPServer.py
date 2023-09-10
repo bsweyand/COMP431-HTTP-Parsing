@@ -57,7 +57,7 @@ def process_valid_command(http_command):
 for command in sys.stdin:
     if command == '\n':
         continue
-    print(command)
+    print(command, end="")
     if not command_is_valid(command):
         continue
     process_valid_command(command)
