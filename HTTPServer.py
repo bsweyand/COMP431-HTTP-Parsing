@@ -6,28 +6,15 @@ import sys
 
 def command_is_valid(http_command):
     arguments = re.split("[ \t]", http_command.rstrip())
-    try:
-        if len(arguments) < 1 or arguments[0] != "GET":
-            print("ERROR -- Invalid Method token.")
-            return False
-    except UnicodeDecodeError:
+    if len(arguments) < 1 or arguments[0] != "GET":
         print("ERROR -- Invalid Method token.")
         return False
-    try:
-        if len(arguments) < 2 or re.match('^(/\\w+)+.?\\w+$', arguments[1]) is None:
-            print("ERROR -- Invalid Absolute-Path token.")
-            return False
-    except UnicodeDecodeError:
+    if len(arguments) < 2 or re.match('^/[A-Za-z0-9._/]+$', arguments[1]) is None:
         print("ERROR -- Invalid Absolute-Path token.")
         return False
-    try:
-        if len(arguments) < 3 or re.match('^HTTP/\\d.\\d$', arguments[2]) is None:
-            print("ERROR -- Invalid HTTP-Version token.")
-            return False
-    except UnicodeDecodeError:
+    if len(arguments) < 3 or re.match('^HTTP/\\d.\\d$', arguments[2]) is None:
         print("ERROR -- Invalid HTTP-Version token.")
         return False
-
     if len(arguments) > 3:
         print("ERROR -- Spurious token before CRLF.")
         return False
@@ -42,7 +29,7 @@ def process_valid_command(http_command):
     print("Method = " + method)
     print("Request-URL = " + path)
     print("HTTP-Version = " + version)
-    if re.search('.html|.htm|.txt|.HTML|.TXT|.HTM', path) is None:
+    if re.search('\\.html|\\.htm|\\.txt', path, re.IGNORECASE) is None:
         print("501 Not Implemented: " + path)
         return
     try:
